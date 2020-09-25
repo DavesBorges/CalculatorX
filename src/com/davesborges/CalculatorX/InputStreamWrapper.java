@@ -5,11 +5,11 @@ import java.io.InputStream;
 import java.io.PushbackInputStream;
 
 public class InputStreamWrapper extends PushbackInputStream{
-    int lineNr = 0;
-    int columnNr = 0;
+    private Position position;
 
     public InputStreamWrapper(InputStream in) {
         super(in);
+        position = new Position();
     }
 
     public double readNumber() throws IOException {
@@ -42,30 +42,34 @@ public class InputStreamWrapper extends PushbackInputStream{
     @Override
     public int read() throws IOException {
         int ch = super.read();
-        columnNr++;
+        position.advanceColumn();
         return ch;
     }
 
     @Override
     public void unread(int ch) throws IOException {
         super.unread(ch);
-        columnNr--;
+        try {
+            position.setColumnNr(position.getColumnNr() -1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public int getLineNr() {
-        return lineNr;
+        return position.getLineNr();
     }
 
     public int getColumnNr() {
-        return columnNr;
+        return position.getColumnNr();
     }
 
-    public void setLineNr(int lineNr) {
-        this.lineNr = lineNr;
+    public void setLineNr(int lineNr) throws Exception {
+        position.setNewPosition(lineNr);
     }
 
-    public void setColumnNr(int columnNr) {
-        this.columnNr = columnNr;
+    public void setColumnNr(int columnNr) throws Exception {
+        position.setColumnNr(columnNr);
     }
 
     public boolean isLetter(int ch){
@@ -80,4 +84,7 @@ public class InputStreamWrapper extends PushbackInputStream{
         return (ch == ' ' || ch == '\n' || ch == '\r' || ch == '\t');
     }
 
+    public Position getPosition() {
+        return position;
+    }
 }

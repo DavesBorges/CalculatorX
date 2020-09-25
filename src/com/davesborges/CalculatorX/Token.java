@@ -4,24 +4,29 @@ public class Token {
     private char kind;
     private double value;
     private String raw;
+    private Position position;
 
-    public Token(char kind, double value){
+    public Token(char kind, double value, Position position){
         this.kind = kind;
         this.value = value;
+        this.position = position;
     }
 
-    public Token(double value){
+    public Token(double value, Position position){
         this.kind = number;
         this.value = value;
+        this.position = position;
     }
 
-    public Token(char ch){
+    public Token(char ch, Position position){
         this.kind = ch;
+        this.position = position;
     }
 
-    public Token(String raw){
+    public Token(String raw, Position position){
         this.kind = name;
         this.raw = raw;
+        this.position = position;
     }
 
     //Getters
@@ -43,7 +48,8 @@ public class Token {
 
     @Override
     public String toString() {
-        return "[kind: " + kind + "] [value: " + value + "] [raw: " + raw + "]";
+        return "[kind: " + kind + "] [value: " + value + "] [raw: " + raw + "]" +
+                "[Line: "+ position.getLineNr() + "] [Column: "+ position.getColumnNr() + "]";
     }
 
     //Constants for identifing the kind of a token

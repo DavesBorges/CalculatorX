@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.PriorityQueue;
 import java.util.Queue;
 
-
 public class BasicTokenStream implements TokenStream {
     private InputStreamWrapper inputStream;
     private boolean bufferFull;
@@ -24,7 +23,7 @@ public class BasicTokenStream implements TokenStream {
     }
 
     @Override
-    public Token read() {
+    public Token read() throws Exception {
         if(EOF)
             return null;
         if(bufferFull){
@@ -43,21 +42,23 @@ public class BasicTokenStream implements TokenStream {
                     inputStream.setLineNr(inputStream.getLineNr() + 1);
                 }
                 ch = inputStream.read();
-
             }
 
-            if(ch < 0 || ch > 127)
+            if(ch < 0 || ch > 127){
+                inputStream.setColumnNr(inputStream.getColumnNr() - 1);
                 return null;
+            }
+
             if(ch >= '0' && ch <= '9' || ch == '.'){
                 inputStream.unread(ch);
-                return (new Token(Token.number, inputStream.readNumber()));
+                return (new Token(Token.number, inputStream.readNumber(), new Position(inputStream.getPosition())));
             }
 
             if(inputStream.isLetter(ch)){
                 inputStream.unread(ch);
-                return new Token(inputStream.readString());
+                return new Token(inputStream.readString(), new Position(inputStream.getPosition()));
             }
-            return new Token((char) ch);
+            return new Token((char) ch, new Position(inputStream.getPosition()));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -65,7 +66,7 @@ public class BasicTokenStream implements TokenStream {
     }
 
     @Override
-    public void addSource(String source, boolean reset) {
+    public void addSource(String source, boolean reset) throws Exception {
         int columnNr = inputStream.getColumnNr();
         int lineNr = inputStream.getLineNr();
 

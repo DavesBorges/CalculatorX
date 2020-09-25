@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 
 public class Main {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         String source;
         TokenStream tokenStream = new BasicTokenStream();
@@ -16,8 +16,7 @@ public class Main {
             tokenStream.addSource(source, false);
             Token t = tokenStream.read();
             while(t != null){
-                System.out.println("Token " + t + "at Line Column " +
-                        tokenStream.getLineNr() + "|" + tokenStream.getColumnNr());
+                System.out.println("Token " + t);
                 t = tokenStream.read();
             }
         }
