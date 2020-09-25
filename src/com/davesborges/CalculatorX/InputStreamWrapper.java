@@ -7,9 +7,13 @@ import java.io.PushbackInputStream;
 public class InputStreamWrapper extends PushbackInputStream{
     private Position position;
 
+    public InputStreamWrapper(InputStream in, String file) {
+        super(in);
+        position = new Position(file);
+    }
     public InputStreamWrapper(InputStream in) {
         super(in);
-        position = new Position();
+        position = new Position("console input");
     }
 
     public double readNumber() throws IOException {

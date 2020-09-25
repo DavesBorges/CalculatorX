@@ -3,7 +3,7 @@ package com.davesborges.CalculatorX;
 public class Token {
     private char kind;
     private double value;
-    private String raw;
+    private String stringValue;
     private Position position;
 
     public Token(char kind, double value, Position position){
@@ -25,7 +25,7 @@ public class Token {
 
     public Token(String raw, Position position){
         this.kind = name;
-        this.raw = raw;
+        this.stringValue = raw;
         this.position = position;
     }
 
@@ -39,8 +39,8 @@ public class Token {
     }
 
     public String getRaw() {
-        if(raw != null)
-            return raw;
+        if(stringValue != null)
+            return stringValue;
         if(kind == number)
             return Double.toString(value);
         return Character.toString(kind);
@@ -48,7 +48,7 @@ public class Token {
 
     @Override
     public String toString() {
-        return "[kind: " + kind + "] [value: " + value + "] [raw: " + raw + "]" +
+        return "[kind: " + kind + "] [value: " + value + "] [stringValue: " + stringValue + "] " + position.getFile() +
                 "[Line: "+ position.getLineNr() + "] [Column: "+ position.getColumnNr() + "]";
     }
 

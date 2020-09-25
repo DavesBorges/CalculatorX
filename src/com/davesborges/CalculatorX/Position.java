@@ -3,26 +3,32 @@ package com.davesborges.CalculatorX;
 public class Position {
     private int lineNr;
     private int columnNr;
+    private String file;
 
     public Position(Position position){
         lineNr = position.getLineNr();
         columnNr = position.getColumnNr();
+        this.file = position.file.toString();
     }
 
-    public Position(){
+    public Position(String file){
         lineNr = 1;
         columnNr = 0;
+        this.file = file;
     }
-    public Position(int lineNr, int columnNr) throws Exception {
+
+    public Position(int lineNr, int columnNr, String file) throws Exception {
         checkNonNegativity(lineNr, columnNr);
         this.lineNr = lineNr;
         this.columnNr = columnNr;
+        this.file = file;
     }
 
-    public Position(int lineNr) throws Exception {
+    public Position(int lineNr, String file) throws Exception {
         checkNonNegativity(lineNr);
         this.lineNr = lineNr;
         this.columnNr = 0;
+        this.file = file;
     }
 
     public void advanceColumn(){
@@ -79,4 +85,7 @@ public class Position {
     }
 
 
+    public String getFile() {
+        return file;
+    }
 }
