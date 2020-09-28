@@ -38,7 +38,7 @@ public class Token {
         return value;
     }
 
-    public String getRaw() {
+    public String getStringValue() {
         if(stringValue != null)
             return stringValue;
         if(kind == number)
@@ -48,16 +48,28 @@ public class Token {
 
     @Override
     public String toString() {
-        return "[kind: " + kind + "] [value: " + value + "] [stringValue: " + stringValue + "] " + position.getFile() +
+        if(stringValue != null){
+            return "[kind: " + kind + "] [value: " + value + "] [stringValue: " + stringValue + "] " + position.getFile() +
+                    "[Line: "+ position.getLineNr() + "] [Column: "+ position.getColumnNr() + "]";
+        }
+        return "[kind: " + kind + "] [value: " + value + "] " + position.getFile() +
                 "[Line: "+ position.getLineNr() + "] [Column: "+ position.getColumnNr() + "]";
     }
 
     //Constants for identifing the kind of a token
     static final char name = 'n';
     static final char number = '0';
+    static final char declarationKeyWord = 'l';
     static final char statementEnd = ';';
+
 
     //Constants for identifing the value of a string token
     static final String nameKeyWord = "name";
+    static final String declaration = "let";
+    static final String exitKeyWord = "exit";
 
+
+    public String getLocation(){
+        return position.getFile() + " Line " + position.getLineNr() + " Column " + position.getColumnNr();
+    }
 }
