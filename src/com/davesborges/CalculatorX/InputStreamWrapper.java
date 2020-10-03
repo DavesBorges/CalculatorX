@@ -34,7 +34,7 @@ public class InputStreamWrapper extends PushbackInputStream{
     public String readString() throws IOException {
         int ch = read();
         String readed = "";
-        while(!isSpace(ch) && ch != -1){
+        while(isLetter(ch) || ((ch >= '0' && ch <= '9') || ch == '_')){
             readed += (char) ch;
             ch = read();
         }

@@ -25,7 +25,7 @@ public class BasicLexer implements Lexer {
     }
 
     public Token read() throws Exception {
-        if(EOF)
+        if(isEOF())
             return null;
         if(bufferFull){
             Token t = buffer.remove();
@@ -40,6 +40,7 @@ public class BasicLexer implements Lexer {
                 if(ch == '\n'){
                     inputStream.setColumnNr(0);
                     inputStream.setLineNr(inputStream.getLineNr() + 1);
+                    return new Token(Token.statementEnd, inputStream.getPosition());
                 }
                 ch = inputStream.read();
             }
@@ -61,7 +62,10 @@ public class BasicLexer implements Lexer {
                 inputStream.unread(ch);
                 Position position = new Position(inputStream.getPosition());
                 position.advanceColumn();
-                return new Token(inputStream.readString(), new Position(position));
+                String string = inputStream.readString();
+                if(string.equals(Token.declaration))
+                    return new Token(Token.declarationKeyWord, new Position(position));
+                return new Token(string, new Position(position));
             }
             return new Token((char) ch, new Position(inputStream.getPosition()));
         } catch (IOException e) {

@@ -35,6 +35,14 @@ public class Position {
         columnNr++;
     }
 
+    public String getLineToString(){
+        return file + " line " + lineNr;
+    }
+
+    @Override
+    public String toString(){
+        return getLineToString() + " col " + columnNr;
+    }
     //Setters
     public void setNewPosition(int newLineNr, int newColumnNr) throws Exception {
         checkNonNegativity(newLineNr, newColumnNr);

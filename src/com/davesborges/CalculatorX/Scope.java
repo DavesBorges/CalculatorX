@@ -1,0 +1,56 @@
+package com.davesborges.CalculatorX;
+
+import java.util.HashMap;
+
+public class Scope {
+    private String sourceName;
+    private FunctionTable functionTable;
+    private VariableTable variableTable;
+
+    public Scope(){
+        functionTable = new MapFunctionTable();
+        variableTable = new MapVariableTable();
+    }
+    public Scope(Scope scope){
+        functionTable = new MapFunctionTable(scope.functionTable);
+        variableTable = new MapVariableTable(scope.variableTable);
+    }
+
+    public boolean isVariableDeclared(String variableName){
+        return variableTable.isDeclared(variableName);
+    }
+
+    public boolean isFunctionDeclared(String functionName){
+        return functionTable.isDeclared(functionName);
+    }
+    public String getSourceName(){
+        return sourceName;
+    }
+
+    public void assignVariable(String variableName, double newValue){
+        variableTable.onAssignVariable(variableName, newValue);
+    }
+
+    public void defineFunction(String functionName, Function function){
+        functionTable.onDefineFunction(functionName, function);
+    }
+
+    public void declareVariable(String name){
+        variableTable.onDeclareVariable(name, new Variable(name));
+    }
+    public void defineVariable(String variableName, double value){
+        variableTable.onDeclareVariable(variableName, new Variable(variableName, value));
+    }
+
+    public String[] getParameters(String functinoName){
+        return functionTable.getParameters(functinoName);
+    }
+
+    public double getValue(String stringValue) throws Exception {
+        return variableTable.getValue(stringValue);
+    }
+
+    public double callFunction(String functionName, double[] arguments) throws Exception {
+        return functionTable.invoke(functionName, arguments);
+    }
+}

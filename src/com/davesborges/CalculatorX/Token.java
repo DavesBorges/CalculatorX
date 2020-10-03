@@ -68,8 +68,18 @@ public class Token {
     static final String declaration = "let";
     static final String exitKeyWord = "exit";
 
+    public Position getPosition(){
+        return position;
+    }
 
     public String getLocation(){
-        return position.getFile() + " Line " + position.getLineNr() + " Column " + position.getColumnNr();
+        return position.toString();
+    }
+
+    public String getLocation(boolean showColumn) {
+        if(showColumn){
+            return position.getLineToString();
+        }
+        return getLocation();
     }
 }
