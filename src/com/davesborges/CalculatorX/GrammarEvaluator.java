@@ -24,6 +24,7 @@ public class GrammarEvaluator {
 
     private String evaluateStatement() throws Exception {
         Token t = tokenStream.read();
+        String result = "";
         switch (t.getKind()){
             case Token.name:
                t = tokenStream.read();
@@ -35,17 +36,18 @@ public class GrammarEvaluator {
                 }
             case Token.number:
                 tokenStream.unread();
-                return Double.toString(evaluateExpression());
+                result = Double.toString(evaluateExpression());
+                break;
             case Token.declarationKeyWord:
                 tokenStream.unread();
                 performDeclaration();
                 return "";
             default:
-
-
+                tokenStream.unread();
+                return Double.toString(evaluateExpression());
         }
         tokenStream.read();
-        return "";
+        return result;
     }
 
     private void performDeclaration() throws Exception {
@@ -184,7 +186,9 @@ public class GrammarEvaluator {
             tokenStream.unread();
             return scope.getValue(name);
         }
-
+        if(t.getKind() == '-'){
+            return - evaluatePrimary();
+        }
         if(t.getKind() == '('){
             double d = 0;
             d = evaluateExpression();

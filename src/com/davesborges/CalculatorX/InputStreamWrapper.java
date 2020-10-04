@@ -28,7 +28,7 @@ public class InputStreamWrapper extends PushbackInputStream{
         if(ch != -1)
             unread(ch);
 
-        return Integer.parseInt(number);
+        return Double.parseDouble(number);
     }
 
     public String readString() throws IOException {

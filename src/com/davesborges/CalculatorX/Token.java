@@ -43,6 +43,9 @@ public class Token {
             return stringValue;
         if(kind == number)
             return Double.toString(value);
+        if(kind == declarationKeyWord){
+            return declaration;
+        }
         return Character.toString(kind);
     }
 
@@ -67,6 +70,7 @@ public class Token {
     static final String nameKeyWord = "name";
     static final String declaration = "let";
     static final String exitKeyWord = "exit";
+    public static String helpKeyword = "help";
 
     public Position getPosition(){
         return position;

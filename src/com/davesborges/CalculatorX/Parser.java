@@ -5,4 +5,7 @@ public interface Parser {
 
     String[] evaluate() throws Exception;
 
+    void checkAllGrammar() throws Exception;
+
+    String[] evaluateAll() throws Exception;
 }

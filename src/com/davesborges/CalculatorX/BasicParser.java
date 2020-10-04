@@ -34,5 +34,24 @@ public class BasicParser implements Parser{
         return evaluationResult;
     }
 
+    @Override
+    public void checkAllGrammar() throws Exception {
+        TokenStream tokenStream = new BasicTokenStream(this.tokenStream);
+        GrammarChecker grammarChecker = new GrammarChecker(tokenStream, scope);
+        while(!tokenStream.isEOF()){
+            grammarChecker.parseNextStatement();
+        }
+    }
+
+    @Override
+    public String[] evaluateAll() throws Exception {
+        ArrayList<String> results = new ArrayList<>();
+        while(!tokenStream.isEOF()){
+            GrammarEvaluator grammarEvaluator = new GrammarEvaluator(tokenStream, scope);
+            results.addAll(Arrays.asList(grammarEvaluator.evaluate()));
+        }
+        return results.toArray(new String[0]);
+    }
+
 
 }

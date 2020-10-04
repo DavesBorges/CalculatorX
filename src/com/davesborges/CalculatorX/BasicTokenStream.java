@@ -52,4 +52,17 @@ public class BasicTokenStream implements TokenStream {
         return tokens.length - getIndex;
     }
 
+    @Override
+    public boolean hasPreceeding() {
+        return (getIndex - 1) >= 0;
+    }
+
+    @Override
+    public Token getPreceeding() {
+        if(!hasPreceeding()){
+            return null;
+        };
+        return tokens[getIndex-1];
+    }
+
 }
