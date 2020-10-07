@@ -42,6 +42,8 @@ public class GrammarEvaluator {
                 tokenStream.unread();
                 performDeclaration();
                 return "";
+            case Token.statementEnd:
+                return "";
             default:
                 tokenStream.unread();
                 return Double.toString(evaluateExpression());
@@ -106,7 +108,7 @@ public class GrammarEvaluator {
             t = tokenStream.read();
         }
         scope.defineFunction(
-            name, new Function(name, parameters.toArray(new String[0]), body.toArray(new Token[0]), functionScope)
+            name, new UserDefinedFunction(name, parameters.toArray(new String[0]), body.toArray(new Token[0]), functionScope)
         );
     }
 
@@ -173,6 +175,9 @@ public class GrammarEvaluator {
     private double evaluatePrimary() throws Exception {
         Token t = tokenStream.read();
         if(t.getKind() == Token.number){
+            if(tokenStream.read().getKind() == Token.exponent)
+                return Math.pow(t.getValue(), evaluatePrimary());
+            tokenStream.unread();
             return t.getValue();
         }
         if(t.getKind() == Token.name){

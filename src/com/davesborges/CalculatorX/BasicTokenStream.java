@@ -7,6 +7,7 @@ public class BasicTokenStream implements TokenStream {
     private Token[] tokens;
     private int getIndex = 0;
     private Position startingPosition;
+    private String code;
 
     public BasicTokenStream(TokenStream tokenStream) {
         Token[] tokens = new Token[tokenStream.available()];
@@ -53,16 +54,21 @@ public class BasicTokenStream implements TokenStream {
     }
 
     @Override
-    public boolean hasPreceeding() {
+    public boolean hasPreceding() {
         return (getIndex - 1) >= 0;
     }
 
     @Override
-    public Token getPreceeding() {
-        if(!hasPreceeding()){
+    public Token getPreceding() {
+        if(!hasPreceding()){
             return null;
         };
         return tokens[getIndex-1];
+    }
+
+    @Override
+    public Position getCurrentPosition() {
+        return tokens[getIndex].getPosition();
     }
 
 }

@@ -64,6 +64,7 @@ public class Token {
     static final char number = '0';
     static final char declarationKeyWord = 'l';
     static final char statementEnd = ';';
+    static final char exponent = '^';
 
 
     //Constants for identifing the value of a string token

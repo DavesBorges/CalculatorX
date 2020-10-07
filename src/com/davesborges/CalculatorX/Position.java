@@ -17,18 +17,8 @@ public class Position {
         this.file = file;
     }
 
-    public Position(int lineNr, int columnNr, String file) throws Exception {
-        checkNonNegativity(lineNr, columnNr);
-        this.lineNr = lineNr;
-        this.columnNr = columnNr;
-        this.file = file;
-    }
-
-    public Position(int lineNr, String file) throws Exception {
-        checkNonNegativity(lineNr);
-        this.lineNr = lineNr;
-        this.columnNr = 0;
-        this.file = file;
+    public Position(int lineNr, int columnNr) throws Exception {
+        this.setNewPosition(lineNr, columnNr);
     }
 
     public void advanceColumn(){
@@ -61,18 +51,6 @@ public class Position {
         this.columnNr = newColumnNr;
     }
 
-    public void setNewPostion(int[] newPostion) throws Exception {
-        checkNonNegativity(newPostion[0]);
-        checkNonNegativity(newPostion[2]);
-
-        this.lineNr = newPostion[0];
-        this.columnNr = newPostion[1];
-    }
-
-    //Getters
-    public int[] getPosition(){
-        return new int[]{lineNr, columnNr};
-    }
 
     public int getLineNr(){
         return lineNr;
@@ -95,5 +73,10 @@ public class Position {
 
     public String getFile() {
         return file;
+    }
+
+
+    public boolean equals(Position position) {
+        return (lineNr == position.lineNr && columnNr == position.columnNr && file.equals(position.file));
     }
 }

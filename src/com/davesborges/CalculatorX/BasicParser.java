@@ -13,7 +13,9 @@ public class BasicParser implements Parser{
         this.tokenStream = tokenStream;
         results = new ArrayList<>();
         this.scope = scope;
+
     }
+
 
     @Override
     public boolean checkGrammar() throws Exception {

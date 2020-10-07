@@ -7,6 +7,7 @@ public interface TokenStream {
     void unread() throws Exception;
     boolean isEOF();
     int available();
-    boolean hasPreceeding();
-    Token getPreceeding();
+    boolean hasPreceding();
+    Token getPreceding();
+    Position getCurrentPosition();
 }

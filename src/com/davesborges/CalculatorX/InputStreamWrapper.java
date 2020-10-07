@@ -6,6 +6,7 @@ import java.io.PushbackInputStream;
 
 public class InputStreamWrapper extends PushbackInputStream{
     private Position position;
+    private int previousColumnNr;
 
     public InputStreamWrapper(InputStream in, String file) {
         super(in);
@@ -46,6 +47,16 @@ public class InputStreamWrapper extends PushbackInputStream{
     @Override
     public int read() throws IOException {
         int ch = super.read();
+        if(ch == '\n'){
+            try{
+                previousColumnNr = getColumnNr();
+                position.setNewPosition(position.getLineNr() + 1, 0);
+                return ch;
+            }
+            catch (Exception exception){
+                System.out.println(exception.getMessage());
+            }
+        }
         position.advanceColumn();
         return ch;
     }
@@ -54,6 +65,10 @@ public class InputStreamWrapper extends PushbackInputStream{
     public void unread(int ch) throws IOException {
         super.unread(ch);
         try {
+            if(getColumnNr() == 0){
+                position.setNewPosition(getLineNr() - 1, previousColumnNr);
+                return;
+            }
             position.setColumnNr(position.getColumnNr() -1);
         } catch (Exception e) {
             e.printStackTrace();
@@ -90,5 +105,9 @@ public class InputStreamWrapper extends PushbackInputStream{
 
     public Position getPosition() {
         return position;
+    }
+
+    public int getPreviousColumnNr() {
+        return previousColumnNr;
     }
 }

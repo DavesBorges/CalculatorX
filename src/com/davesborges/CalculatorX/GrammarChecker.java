@@ -1,6 +1,5 @@
 package com.davesborges.CalculatorX;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
 
 public class GrammarChecker {
@@ -12,7 +11,15 @@ public class GrammarChecker {
         this.scope = new Scope(scope);
     }
     public boolean parseNextStatement() throws Exception {
-        isStatement();
+        Position position = tokenStream.getCurrentPosition();
+        try{
+            isStatement();
+        }
+
+        catch(ParseException parseException){
+            parseException.setStartingPosition(position);
+            throw parseException;
+        }
         return true;
     }
 
@@ -46,6 +53,9 @@ public class GrammarChecker {
                 }
                 isDeclaration();
                 break;
+
+            case Token.statementEnd:
+                return true;
             default:
                 tokenStream.unread();
                 isExpression();
@@ -77,7 +87,7 @@ public class GrammarChecker {
         tokenStream.read();
         Token t;
         t = tokenStream.read();
-        String name = t.getStringValue();
+        Token nameToken = t;
         if(t.getKind() != Token.name){
             throw new ParseException("Expected name", t.getLocation());
         }
@@ -89,9 +99,9 @@ public class GrammarChecker {
                 return isFunctionDeclaration();
             case '=':
                 isExpression();
-                if(scope.isVariableDeclared(name))
-                    throw new ParseException("Name " + t.getStringValue() + " is already declared", t.getLocation());
-                scope.declareVariable(name);
+                if(scope.isVariableDeclared(nameToken.getStringValue()))
+                    throw new ParseException("Name '" + nameToken.getStringValue() + "' is already declared", nameToken.getLocation());
+                scope.declareVariable(nameToken.getStringValue());
                 break;
             default:
                 throw new ParseException("Expected '=' or '(' before " + t.getStringValue(), t.getLocation());
@@ -132,7 +142,7 @@ public class GrammarChecker {
         catch (ParseException parseException){
             throw new ParseException(" Invalid expression after '=': (" + parseException.getMessage() + ')', t.getLocation());
         }
-        scope.defineFunction(name, new Function(name, parameters.toArray(new String[0]), new Token[0], functionScope));
+        scope.defineFunction(name, new UserDefinedFunction(name, parameters.toArray(new String[0]), new Token[0], functionScope));
         return true;
     }
 
@@ -174,16 +184,20 @@ public class GrammarChecker {
     }
 
     private boolean isPrimary() throws Exception {
-        Token preceedingToken = null;
-        if(tokenStream.hasPreceeding()){
-            preceedingToken = tokenStream.getPreceeding();
+        Token precedingToken = null;
+        if(tokenStream.hasPreceding()){
+            precedingToken = tokenStream.getPreceding();
         }
         Token t = tokenStream.read();
         if(t.getKind() == Token.number){
+            if(tokenStream.read().getKind() == Token.exponent){
+                return isPrimary();
+            }
+            tokenStream.unread();
             return true;
         }
         if(t.getKind() == '-'){
-            if(preceedingToken != null && "+-*/".contains(preceedingToken.getStringValue())){
+            if(precedingToken != null && "+-*/".contains(precedingToken.getStringValue())){
                 throw new ParseException("Two consecutive arithimetic operators ", t.getLocation());
             }
             return isPrimary();
@@ -208,7 +222,7 @@ public class GrammarChecker {
                 throw new ParseException("Expected ')' before " + t.getStringValue(), t.getLocation());
             return true;
         }
-        throw new ParseException("Invalid primary " + t.getStringValue(), t.getLocation());
+        throw new ParseException("Unexpected token " + t.getStringValue(), t.getLocation());
     }
 
     private boolean isFunctionCall() throws Exception {
@@ -234,7 +248,7 @@ public class GrammarChecker {
         if(arguments.size() != scope.getParameters(functionName).length){
             throw new ParseException(
                     "Wrong number of arguments. Expected " + scope.getParameters(functionName).length
-                    + " but found" + arguments.size(), t.getLocation(false));
+                    + " but found " + arguments.size(), t.getLocation(false));
         }
         return true;
     }

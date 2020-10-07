@@ -38,9 +38,8 @@ public class BasicLexer implements Lexer {
             int ch = inputStream.read();
             while(inputStream.isSpace(ch)){
                 if(ch == '\n'){
-                    inputStream.setColumnNr(0);
-                    inputStream.setLineNr(inputStream.getLineNr() + 1);
-                    return new Token(Token.statementEnd, inputStream.getPosition());
+                    return new Token(Token.statementEnd,
+                            new Position(inputStream.getLineNr() - 1, inputStream.getPreviousColumnNr()));
                 }
                 ch = inputStream.read();
             }

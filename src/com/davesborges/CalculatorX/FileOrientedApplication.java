@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class FileOrientedApplication extends Application {
-    private String sourceName;
 
     public FileOrientedApplication(String[] args) throws Exception {
         if(args.length != 2)
@@ -41,7 +40,7 @@ public class FileOrientedApplication extends Application {
             }
             outputStream.print(output);
         }catch (ParseException parseException){
-            outputStream.println("Parse Exception " + parseException.getMessage());
+            reportError(parseException, code);
         }
         catch (Exception exception){
             outputStream.println("EXCEPTION " + exception.getMessage());

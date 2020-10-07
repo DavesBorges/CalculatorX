@@ -1,7 +1,5 @@
 package com.davesborges.CalculatorX;
 
-import java.util.HashMap;
-
 public class Scope {
     private String sourceName;
     private FunctionTable functionTable;
@@ -10,10 +8,12 @@ public class Scope {
     public Scope(){
         functionTable = new MapFunctionTable();
         variableTable = new MapVariableTable();
+        defineFunction("sqrt", new PredefinedFunction("sqrt", new String[]{"number"}, doubles -> Math.sqrt(doubles[0])));
     }
     public Scope(Scope scope){
         functionTable = new MapFunctionTable(scope.functionTable);
         variableTable = new MapVariableTable(scope.variableTable);
+
     }
 
     public boolean isVariableDeclared(String variableName){

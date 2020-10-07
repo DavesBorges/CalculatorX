@@ -37,7 +37,7 @@ public class MapFunctionTable implements FunctionTable {
 
     @Override
     public String[] getParameters(String functinoName) {
-        return functionMap.get(functinoName).getParamters();
+        return functionMap.get(functinoName).getParameters();
     }
 
 

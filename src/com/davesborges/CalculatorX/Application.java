@@ -7,15 +7,16 @@ public class Application {
     private Language language;
     protected BufferedReader reader;
     protected PrintStream outputStream;
+    protected String sourceName;
     
     public Application(){
         reader = new BufferedReader(new InputStreamReader(System.in));
         outputStream = System.out;
+        sourceName = "console input";
     }
     public void run() throws Exception {
         getUserLanguage();
         String content;
-        String fileName = "console input";
         Lexer lexer = new BasicLexer();
         Scope scope = new Scope();
         while(true){
@@ -23,7 +24,7 @@ public class Application {
             content = reader.readLine() + '\n';
             if(content.length() <= 1)
                 continue;
-            lexer.addSource(fileName, content, true);
+            lexer.addSource(sourceName, content, true);
 
             TokenStream tokenStream = new BasicTokenStream(lexer.getTokens());
             Token t = tokenStream.read();
@@ -44,7 +45,7 @@ public class Application {
                 Arrays.stream(results).filter( x -> x.length() != 0).forEach(result -> outputStream.println("= " + result));
             }
             catch (ParseException parseException){
-                outputStream.println("Parse Exception " + parseException.getMessage());
+                reportError(parseException, content);
             }
 
         }
@@ -116,5 +117,26 @@ public class Application {
         System.in.read();
 
 
+    }
+
+    protected void reportError(ParseException parseException, String content) throws IOException {
+        Position position = parseException.getStartingPosition();
+        InputStreamWrapper inputStreamWrapper =
+                new InputStreamWrapper(new ByteArrayInputStream(content.getBytes()), sourceName);
+        String errorStatement = "";
+        char ch = ' ';
+        while(!position.equals(inputStreamWrapper.getPosition())){
+            ch = (char) inputStreamWrapper.read();
+        }
+        errorStatement += ch;
+        while(inputStreamWrapper.available() != 0 && !errorStatement.contains(";")){
+            ch = (char) inputStreamWrapper.read();
+            if(ch == '\n')
+                break;
+
+            errorStatement += ch;
+        }
+
+        outputStream.println("Parse Exception \"" + errorStatement + "\" " + parseException.getMessage());
     }
 }
