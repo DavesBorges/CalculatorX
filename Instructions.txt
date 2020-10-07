@@ -5,7 +5,7 @@ How it works:
 -Just type your mathematical expression and press enter to get the result. 
 	Ex: if you type "2 + 5" you will get 7.
 	CalculatorX supports addition(+), subraction(-), division(/) and 
-		multiplication(*).
+		multiplication(*), powers(x^y).
 	You can use parentheses to modify the order of evaluation such that if
 	you type "2 * (2 + 1)" the result will be 6
 
@@ -20,6 +20,8 @@ VARIABLES
 
 
 FUNCTIONS
+	Built in functions 
+		sqrt(x) -> square root
 	You can define your own functions in CalculatorX. As an example, 
 	here is how to declare a function that computes the double of a number: 
 		"let double(x) = x * 2"
@@ -42,7 +44,7 @@ Bem vindo ao CalculatorX
 Como funciona:
 -Escreva uma expressão matematica e prima ENTER para obter o resultado
 	Ex: Se digitares "2 + 5" iras obter 7.
-	CalculatorX supporta addicao(+), subtracao(-), divisao(/) e multiplicacao(*)
+	CalculatorX supporta addicao(+), subtracao(-), divisao(/), multiplicacao(*) e potência(x^y)
 	Podes usar parenteses para modificar a ordem de operação de maneira que 
 	se digitares "2 * (2+1)"  o resultado sera 6
 
@@ -56,6 +58,8 @@ VARIAVEIS
 	basta digitar "x = 10"
 
 Funcoes
+	Funções predefinidas:
+		sqrt(x) -> raíz quadrada de x
 	Podes definir as tuas proprias funcoes no CalculatorX. Por exemplo, eis como
 	declarar uma funcao que calcula o dobro de um numero:
 		"let dobro(x) = x * 2"
