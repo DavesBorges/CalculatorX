@@ -65,13 +65,15 @@ public class Token {
     static final char declarationKeyWord = 'l';
     static final char statementEnd = ';';
     static final char exponent = '^';
+    static final char constKey = 'c';
 
 
     //Constants for identifing the value of a string token
     static final String nameKeyWord = "name";
     static final String declaration = "let";
     static final String exitKeyWord = "exit";
-    public static String helpKeyword = "help";
+    public final static String helpKeyword = "help";
+    public final static String constKeyWord = "const";
 
     public Position getPosition(){
         return position;

@@ -54,29 +54,52 @@ public class GrammarEvaluator {
 
     private void performDeclaration() throws Exception {
         tokenStream.read();
-        tokenStream.read();
-        Token t;
-        t = tokenStream.read();
+        Token t = tokenStream.read();
+
         switch (t.getKind()){
-            case '(':
+            case Token.name:
+                t = tokenStream.read();
+                switch (t.getKind()){
+                    case '(':
+                        tokenStream.unread();
+                        tokenStream.unread();
+                        performFunctionDeclaration();
+                        break;
+                    case '=':
+                        tokenStream.unread();
+                        tokenStream.unread();
+                        performVariableDeclaration();
+                        break;
+                    default:
+                        throw new ParseException("Expected '=' or '('", t.getLocation());
+                }
+            break;
+            case Token.constKey:
+                t = tokenStream.read();
+                if(t.getKind() != Token.name)
+                    throw new ParseException("Expected constant name", t.getLocation());
                 tokenStream.unread();
-                tokenStream.unread();
-                performFunctionDeclaration();
-                break;
-            case '=':
                 tokenStream.unread();
                 tokenStream.unread();
                 performVariableDeclaration();
-                break;
-            default:
-                throw new ParseException("Expected '=' or '('", t.getLocation());
+
         }
     }
 
     private void performVariableDeclaration() throws Exception {
-        String name = tokenStream.read().getStringValue();
         tokenStream.read();
-        scope.defineVariable(name, evaluateExpression());
+        if(tokenStream.read().getKind() == Token.constKey){
+            String name = tokenStream.read().getStringValue();
+            scope.defineConstant(name, evaluateExpression());
+        }
+
+        else{
+            tokenStream.unread();
+            tokenStream.unread();
+            String name = tokenStream.read().getStringValue();
+            tokenStream.read();
+            scope.defineVariable(name, evaluateExpression());
+        }
         tokenStream.read();
     }
 
@@ -145,7 +168,7 @@ public class GrammarEvaluator {
     }
 
     private double evaluateTerm() throws Exception {
-        double d = evaluatePrimary();
+        double d = evaluateSubTerm();
         Token t = tokenStream.read();
         while(true){
             if(t == null){
@@ -170,6 +193,15 @@ public class GrammarEvaluator {
                     return d;
             }
         }
+    }
+
+    private double evaluateSubTerm() throws Exception {
+        double d = evaluatePrimary();
+        if(tokenStream.read().getKind() == Token.exponent){
+            return Math.pow(d, evaluatePrimary());
+        }
+        tokenStream.unread();
+        return d;
     }
 
     private double evaluatePrimary() throws Exception {

@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="CalculatorX.lib">
+    <output-path>$PROJECT_DIR$/out/artifacts/CalculatorX_lib</output-path>
+    <root id="archive" name="CalculatorX.lib.jar">
+      <element id="library" level="project" name="CalculatorX" />
+    </root>
+  </artifact>
+</component>

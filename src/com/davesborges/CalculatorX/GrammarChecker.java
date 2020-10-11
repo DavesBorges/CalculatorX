@@ -78,8 +78,12 @@ public class GrammarChecker {
         if(!scope.isVariableDeclared(variableName)){
             throw new ParseException(t.getStringValue() + " is not a declared variable ", t.getLocation());
         }
+        if(scope.isConstant(variableName))
+            throw new ParseException(t.getStringValue() + " is a constant and cannot be assigned", t.getLocation());
+
         tokenStream.read();
         isExpression();
+
     }
 
     private boolean isDeclaration() throws Exception {
@@ -87,27 +91,41 @@ public class GrammarChecker {
         tokenStream.read();
         Token t;
         t = tokenStream.read();
-        Token nameToken = t;
-        if(t.getKind() != Token.name){
-            throw new ParseException("Expected name", t.getLocation());
-        }
-        t = tokenStream.read();
+        Token nexToken = t;
         switch (t.getKind()){
-            case '(':
-                tokenStream.unread();
-                tokenStream.unread();
-                return isFunctionDeclaration();
-            case '=':
+            case Token.name:
+                String name = t.getStringValue();
+                String position = t.getLocation();
+                t = tokenStream.read();
+                switch (t.getKind()) {
+                    case '(':
+                        tokenStream.unread();
+                        tokenStream.unread();
+                        return isFunctionDeclaration();
+                    case '=':
+                        if(scope.isFunctionDeclared(name) || scope.isVariableDeclared(name)){
+                            throw new ParseException("Name " + name + " already declared ", position);
+                        }
+                        isExpression();
+                        break;
+                    default:
+                        throw new ParseException("Expected '=' or '('", t.getLocation());
+                }
+                break;
+            case Token.constKey:
+                t = tokenStream.read();
+                if(t.getKind() != Token.name)
+                    throw new ParseException("Expected name ", t.getLocation());
+                t = tokenStream.read();
+                if(t.getKind() != '=')
+                    throw new ParseException("Expected '=' ", t.getLocation());
                 isExpression();
-                if(scope.isVariableDeclared(nameToken.getStringValue()))
-                    throw new ParseException("Name '" + nameToken.getStringValue() + "' is already declared", nameToken.getLocation());
-                scope.declareVariable(nameToken.getStringValue());
                 break;
             default:
-                throw new ParseException("Expected '=' or '(' before " + t.getStringValue(), t.getLocation());
+                throw new ParseException("Expected name or 'const' keyword", t.getLocation());
         }
-
         return true;
+
     }
 
     private boolean isFunctionDeclaration() throws Exception {
@@ -166,7 +184,7 @@ public class GrammarChecker {
     }
 
     private boolean isTerm() throws Exception {
-        if(!isPrimary())
+        if(!isSubTerm())
             return false;
         Token t = tokenStream.read();
         if(t != null) {
@@ -183,6 +201,14 @@ public class GrammarChecker {
         return true;
     }
 
+    private boolean isSubTerm() throws Exception {
+        isPrimary();
+        if(tokenStream.read().getKind() == Token.exponent){
+            return isPrimary();
+        }
+        tokenStream.unread();
+        return true;
+    }
     private boolean isPrimary() throws Exception {
         Token precedingToken = null;
         if(tokenStream.hasPreceding()){
@@ -190,10 +216,6 @@ public class GrammarChecker {
         }
         Token t = tokenStream.read();
         if(t.getKind() == Token.number){
-            if(tokenStream.read().getKind() == Token.exponent){
-                return isPrimary();
-            }
-            tokenStream.unread();
             return true;
         }
         if(t.getKind() == '-'){

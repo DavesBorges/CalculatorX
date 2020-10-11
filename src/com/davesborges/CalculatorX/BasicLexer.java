@@ -62,8 +62,12 @@ public class BasicLexer implements Lexer {
                 Position position = new Position(inputStream.getPosition());
                 position.advanceColumn();
                 String string = inputStream.readString();
-                if(string.equals(Token.declaration))
-                    return new Token(Token.declarationKeyWord, new Position(position));
+                switch(string){
+                    case Token.declaration:
+                        return new Token(Token.declarationKeyWord, new Position(position));
+                    case Token.constKeyWord:
+                        return new Token(Token.constKey, new Position(position));
+                }
                 return new Token(string, new Position(position));
             }
             return new Token((char) ch, new Position(inputStream.getPosition()));

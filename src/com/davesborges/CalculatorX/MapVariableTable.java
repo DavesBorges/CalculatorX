@@ -23,7 +23,12 @@ public class MapVariableTable implements VariableTable {
     }
 
     @Override
-    public void onAssignVariable(String name, double newValue) {
+    public void onDeclareConstant(String name, Variable constant) throws Exception {
+        variablesMap.put(name, new Variable(name, constant.getValue(), constant.isConstant()));
+    }
+
+    @Override
+    public void onAssignVariable(String name, double newValue) throws Exception {
         variablesMap.get(name).setValue(newValue);
     }
 
@@ -40,5 +45,10 @@ public class MapVariableTable implements VariableTable {
     @Override
     public double getValue(String stringValue) throws Exception {
         return variablesMap.get(stringValue).getValue();
+    }
+
+    @Override
+    public boolean isConstant(String variableName){
+        return variablesMap.get(variableName).isConstant();
     }
 }
