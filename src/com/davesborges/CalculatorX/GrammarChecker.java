@@ -107,6 +107,7 @@ public class GrammarChecker {
                             throw new ParseException("Name " + name + " already declared ", position);
                         }
                         isExpression();
+                        scope.declareVariable(name);
                         break;
                     default:
                         throw new ParseException("Expected '=' or '('", t.getLocation());
@@ -116,10 +117,13 @@ public class GrammarChecker {
                 t = tokenStream.read();
                 if(t.getKind() != Token.name)
                     throw new ParseException("Expected name ", t.getLocation());
+                name = t.getStringValue();
                 t = tokenStream.read();
                 if(t.getKind() != '=')
                     throw new ParseException("Expected '=' ", t.getLocation());
                 isExpression();
+                //Random and unimportant number
+                scope.defineConstant(name, 10);
                 break;
             default:
                 throw new ParseException("Expected name or 'const' keyword", t.getLocation());
