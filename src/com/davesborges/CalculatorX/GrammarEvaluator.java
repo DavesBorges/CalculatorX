@@ -90,6 +90,7 @@ public class GrammarEvaluator {
         tokenStream.read();
         if(tokenStream.read().getKind() == Token.constKey){
             String name = tokenStream.read().getStringValue();
+            tokenStream.read();
             scope.defineConstant(name, evaluateExpression());
         }
 
@@ -97,7 +98,7 @@ public class GrammarEvaluator {
             tokenStream.unread();
             tokenStream.unread();
             String name = tokenStream.read().getStringValue();
-            tokenStream.read();
+            Token t = tokenStream.read();
             scope.defineVariable(name, evaluateExpression());
         }
         tokenStream.read();

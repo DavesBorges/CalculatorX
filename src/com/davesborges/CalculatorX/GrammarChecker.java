@@ -118,10 +118,15 @@ public class GrammarChecker {
                 if(t.getKind() != Token.name)
                     throw new ParseException("Expected name ", t.getLocation());
                 name = t.getStringValue();
+                position = t.getLocation();
+                name = t.getStringValue();
                 t = tokenStream.read();
                 if(t.getKind() != '=')
                     throw new ParseException("Expected '=' ", t.getLocation());
                 isExpression();
+                if(scope.isFunctionDeclared(name) || scope.isVariableDeclared(name)){
+                            throw new ParseException("Name " + name + " already declared ", position);
+                }
                 //Random and unimportant number
                 scope.defineConstant(name, 10);
                 break;

@@ -18,6 +18,11 @@ VARIABLES
 	If I want to modify the variable to hold the value 10 instead of 22,
 	I would simply type "x = 10"
 
+	CONSTANTS
+		To define a variable that cant be changed use the "const" keyword
+		before the name of the variable:
+			"let const lightSpeed = "3 * 10^8"
+
 
 FUNCTIONS
 	Built in functions 

@@ -14,6 +14,7 @@ A calculator for mathemathics expressions
   
   * Additional Features:
     * Variables
+      * Constant Variables
     * User Defined Functions
     * File evaluation and File output
 
